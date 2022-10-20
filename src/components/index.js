@@ -203,10 +203,10 @@ const Interface = () => {
         const curEpochVal = START_TIME > blockTimestamp ? 0 : Math.floor((blockTimestamp - START_TIME) / EPOCH_LENGTH + 1)
         setCurEpoch(curEpochVal)
 
-        const epoch = curEpochVal > 0 ? curEpoch : 1
+        const epoch = curEpochVal > 0 ? curEpochVal : 1
         const closeTime = (START_TIME + (epoch - 1) * EPOCH_LENGTH + WITHDRAW_TIME)
 
-        if (blockTimestamp < closeTime) {
+        if (blockTimestamp < closeTime && curEpochVal > 1) {
           setRemainTime(closeTime - blockTimestamp)
           setWithdrawState(true)
         } else {
@@ -670,6 +670,7 @@ const Interface = () => {
                         <input
                           type="number"
                           placeholder="100 BUSD"
+                          min={0}
                           className="form-control input-box"
                           value={depositValue}
                           step={10}
@@ -822,6 +823,7 @@ const Interface = () => {
                         <input
                           type="number"
                           placeholder="100 BUSD"
+                          min={0}
                           className="form-control input-box"
                           value={withdrawRequestValue}
                           step={10}
@@ -842,6 +844,7 @@ const Interface = () => {
                         <input
                           type="number"
                           placeholder="100 BUSD"
+                          min={0}
                           className="form-control input-box"
                           value={withdrawValue}
                           step={10}
@@ -851,7 +854,13 @@ const Interface = () => {
                       <td style={{ textAlign: "right" }}>
                         <button className="btn btn-primary btn-lg btn-custom" style={{ width: "123px" }}
                           onClick={unStake}
-                          disabled={pendingTx}
+                          disabled={
+                            pendingTx ||
+                            !withdrawState ||
+                            Number.isNaN(withdrawValue) ||
+                            parseFloat(withdrawValue) > enabledAmount ||
+                            parseFloat(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[0] : "0", DECIMALS))
+                          }
                         >
                           WITHDRAW
                         </button>

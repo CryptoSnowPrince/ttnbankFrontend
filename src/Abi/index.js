@@ -5,12 +5,14 @@ export const DENOMINATOR_PERCENT = 100
 
 // test
 export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
+
 export const BUSD_ADDRESS = "0x457752e5a1A576996FC1b9A050387919ea289Af9";
-export const TTNBANK = '0x73150Ae5A177A6469745014Fed0AbBa69Ea8A159'; // without withdraw
 export const TREASURY = '0x84f8bF4bB72F4BE2C131a5F7B519b23958A76980'
-export const START_TIME = 1666292600 // without withdraw
+export const START_TIME = 1666300000 // without withdraw
 export const EPOCH_LENGTH = 3600
-export const WITHDRAW_TIME = 300
+export const WITHDRAW_TIME = 600
+
+export const TTNBANK = '0xf5341377d0e6368C16097E31c27bd2283A9Cdc8E'; // without withdraw
 
 export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
 export const MAINNET = 97
