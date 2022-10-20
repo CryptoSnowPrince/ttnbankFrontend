@@ -1,28 +1,24 @@
-export const MIN_DEPOSIT_AMOUNT = 20
-export const MAX_DEPOSIT_AMOUNT = 25000
 export const REFERRAL_PERCENT = 1000
-// export const DEPOSIT_FEE = 100
 export const WITHDRAW_FEE = 100
 export const DENOMINATOR = 10000
 export const DENOMINATOR_PERCENT = 100
-export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
-export const MAINNET = 56
+
+// test
 export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
-export const TREASURY = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
+export const BUSD_ADDRESS = "0x457752e5a1A576996FC1b9A050387919ea289Af9";
+export const TTNBANK = '0x73150Ae5A177A6469745014Fed0AbBa69Ea8A159'; // without withdraw
+export const TREASURY = '0x84f8bF4bB72F4BE2C131a5F7B519b23958A76980'
+export const START_TIME = 1666292600 // without withdraw
+export const EPOCH_LENGTH = 3600
+export const WITHDRAW_TIME = 300
+
+export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
+export const MAINNET = 97
 export const PUBLIC_URL = "https://mango-finance-2022.web.app"
 export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
 export const DECIMALS = 'ether' // 18
 
-// export const contractAddress = '0xadABF482b1cC32a3dcce1b498cDa9b28584c804e'; // with withdraw
-// export const START_TIME = 1666056915
-// export const EPOCH_LENGTH = 3600
-
-export const contractAddress = '0x088b78821263e43fE26a6CC069Fba6074dE29681'; // without withdraw
-export const START_TIME = 1666056225 // without withdraw
-export const EPOCH_LENGTH = 1200
-
-
-const abi = [
+const TTNBANK_ABI = [
 	{
 		"inputs": [
 			{
@@ -73,151 +69,36 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "_stakedToken",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_bank",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "_apy",
 				"type": "uint256"
-			}
-		],
-		"name": "setAPY",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_bank",
-				"type": "address"
-			}
-		],
-		"name": "setBank",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_devWallet",
-				"type": "address"
-			}
-		],
-		"name": "setDevWallet",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_minAmount",
-				"type": "uint256"
 			},
-			{
-				"internalType": "uint256",
-				"name": "_maxAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "setMinMaxDepositAmount",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "setPause",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IERC20",
-				"name": "_rewardToken",
-				"type": "address"
-			}
-		],
-		"name": "setRewardToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IERC20",
-				"name": "_stakedToken",
-				"type": "address"
-			}
-		],
-		"name": "setStakedToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
 			{
 				"internalType": "address",
 				"name": "_treasury",
 				"type": "address"
-			}
-		],
-		"name": "setTreasury",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "setUnpause",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IERC20",
-				"name": "_stakedToken",
-				"type": "address"
-			},
-			{
-				"internalType": "contract IERC20",
-				"name": "_rewardToken",
-				"type": "address"
 			},
 			{
 				"internalType": "address",
-				"name": "_bank",
+				"name": "_devWallet",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_startTime",
+				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
@@ -226,18 +107,8 @@ const abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "_apy",
+				"name": "_withdrawTime",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_treasury",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_devWallet",
-				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -345,25 +216,6 @@ const abi = [
 			{
 				"indexed": true,
 				"internalType": "uint256",
-				"name": "minAmount",
-				"type": "uint256"
-			},
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "maxAmount",
-				"type": "uint256"
-			}
-		],
-		"name": "LogSetMinMaxDepositAmount",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
 				"name": "epochNumber",
 				"type": "uint256"
 			}
@@ -396,33 +248,8 @@ const abi = [
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "rewardToken",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint8",
-				"name": "rewardDecimals",
-				"type": "uint8"
-			}
-		],
-		"name": "LogSetRewardToken",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
 				"name": "stakedToken",
 				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint8",
-				"name": "stakedDecimals",
-				"type": "uint8"
 			}
 		],
 		"name": "LogSetStakedToken",
@@ -543,6 +370,105 @@ const abi = [
 		"type": "event"
 	},
 	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_apy",
+				"type": "uint256"
+			}
+		],
+		"name": "setAPY",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_bank",
+				"type": "address"
+			}
+		],
+		"name": "setBank",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_devWallet",
+				"type": "address"
+			}
+		],
+		"name": "setDevWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "setPause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "_stakedToken",
+				"type": "address"
+			}
+		],
+		"name": "setStakedToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_treasury",
+				"type": "address"
+			}
+		],
+		"name": "setTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "setUnpause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -576,8 +502,14 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "withdrawReward",
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "withdrawRequest",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -640,33 +572,7 @@ const abi = [
 	},
 	{
 		"inputs": [],
-		"name": "CIRCULATING_FUNDS_PERCENT",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "DENOMINATOR",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "DEPOSIT_FEE",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -705,7 +611,7 @@ const abi = [
 	},
 	{
 		"inputs": [],
-		"name": "epochLength",
+		"name": "EPOCH_LENGTH",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -749,63 +655,6 @@ const abi = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "lastActionEpochNumber",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "lastClaimEpochNumber",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "lastRewards",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "MAX_APY",
 		"outputs": [
@@ -820,33 +669,7 @@ const abi = [
 	},
 	{
 		"inputs": [],
-		"name": "MAX_DEPOSIT_AMOUNT",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "MIN_APY",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "MIN_DEPOSIT_AMOUNT",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -923,70 +746,12 @@ const abi = [
 				"type": "address"
 			}
 		],
-		"name": "referrals",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
 		"name": "referralTotalRewards",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "rewardDecimals",
-		"outputs": [
-			{
-				"internalType": "uint8",
-				"name": "",
-				"type": "uint8"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "rewardToken",
-		"outputs": [
-			{
-				"internalType": "contract IERC20",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "stakedDecimals",
-		"outputs": [
-			{
-				"internalType": "uint8",
-				"name": "",
-				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -1007,7 +772,7 @@ const abi = [
 	},
 	{
 		"inputs": [],
-		"name": "startTime",
+		"name": "START_TIME",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -1032,6 +797,19 @@ const abi = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "treasury",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -1039,24 +817,41 @@ const abi = [
 				"type": "address"
 			}
 		],
-		"name": "totalRewards",
+		"name": "userInfo",
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "requestAmount",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "treasury",
-		"outputs": [
+			},
+			{
+				"internalType": "uint256",
+				"name": "requestEpochNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pendingClaimEpochNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lastActionEpochNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "lastRewards",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRewards",
+				"type": "uint256"
+			},
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "referrals",
 				"type": "address"
 			}
 		],
@@ -1075,10 +870,102 @@ const abi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "WITHDRAW_TIME",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
 ];
 
-// @ts-ignore
-export default function getAbi(web3) {
-	return new web3.eth.Contract(abi, contractAddress);
+const TOKEN_ABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+export function getTokenAbi(web3) {
+	return new web3.eth.Contract(TOKEN_ABI, BUSD_ADDRESS);
+}
+
+export function getAbi(web3) {
+	return new web3.eth.Contract(TTNBANK_ABI, TTNBANK);
 }

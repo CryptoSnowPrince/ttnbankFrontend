@@ -3,25 +3,24 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import web3ModalSetup from "./../helpers/web3ModalSetup";
 import Web3 from "web3";
-import getAbi, {
-  MIN_DEPOSIT_AMOUNT,
-  MAX_DEPOSIT_AMOUNT,
+import {
+  getAbi,
+  getTokenAbi,
   REFERRAL_PERCENT,
-  // DEPOSIT_FEE,
   WITHDRAW_FEE,
   DENOMINATOR,
   DENOMINATOR_PERCENT,
   DECIMALS,
   EPOCH_LENGTH,
-  contractAddress,
+  TTNBANK,
   START_TIME,
   RPC_URL,
   MAINNET,
   ADMIN_ACCOUNT,
   REF_PREFIX,
-  TREASURY
+  TREASURY,
+  WITHDRAW_TIME
 } from "../Abi";
-import getTokenAbi from "../tokenAbi";
 // import logo from "./../assets/logo.png";
 // import logoMobile from "./../assets/logo.png";
 // import axios from "axios";
@@ -37,7 +36,7 @@ const LightTooltip = styled(({ className, ...props }) => (
     backgroundColor: theme.palette.common.black,
     color: 'rgba(255, 255, 255, 0.8)',
     boxShadow: theme.shadows[1],
-    fontSize: 18,
+    fontSize: 14,
   },
 }));
 
@@ -50,50 +49,42 @@ const AbiNoAccount = getAbi(web3NoAccount)
 const Interface = () => {
   const isMobile = window.matchMedia("only screen and (max-width: 1000px)").matches;
 
+  const queryString = window.location.search;
+  const parameters = new URLSearchParams(queryString);
+  const newReferral = parameters.get('ref');
+
   const [Abi, setAbi] = useState();
   const [tokenAbi, setTokenAbi] = useState();
   const [web3, setWeb3] = useState();
   const [isConnected, setIsConnected] = useState(false);
   const [injectedProvider, setInjectedProvider] = useState();
   const [refetch, setRefetch] = useState(true);
-  // const [errorMessage, setErrorMessage] = useState(null);
-  // const [accounts, setAccounts] = useState(null);
   const [curAcount, setCurAcount] = useState(null);
   const [connButtonText, setConnButtonText] = useState("CONNECT");
   const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [treasuryAmount, setTreasuryAmount] = useState(0);
-  const [userBalance, setUserBalance] = useState(0);
-  const [userApprovedAmount, setUserApprovedAmount] = useState(0);
-  const [userDepositedAmount, setUserDepositedAmount] = useState(0);
-  // const [userDailyRoi, setUserDailyRoi] = useState(0);
-  // const [dailyReward, setDailyReward] = useState(0);
-  // const [startTime, setClaimStartTime] = useState(0);
-  // const [deadline, setClaimDeadline] = useState(0);
-  // const [approvedWithdraw, setApprovedWithdraw] = useState(0);
-  const [lastWithdraw, setLastWithdraw] = useState(0);
-  const [nextWithdraw, setNextWithdraw] = useState(0);
-  const [totalWithdraw, setTotalWithdraw] = useState(0);
-  const [referralReward, setReferralReward] = useState(0);
-  const [refTotalWithdraw, setRefTotalWithdraw] = useState(0);
+
+  const [pendingMessage, setPendingMessage] = useState('');
+  const [calculate, setCalculator] = useState('');
+  const [pendingTx, setPendingTx] = useState(false);
+  const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false);
+
   const [depositValue, setDepositValue] = useState('');
   const [withdrawValue, setWithdrawValue] = useState('');
   const [withdrawRequestValue, setWithdrawRequestValue] = useState('');
 
-  const [pendingMessage, setPendingMessage] = useState('');
-  const [calculate, setCalculator] = useState('');
-
-  // const [defaultRef, setDefaultRef] = useState("0x0000000000000000000000000000000000000000");
-
-  // const [roi, setRoi] = useState(8);
-  const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false);
-  const [pendingTx, setPendingTx] = useState(false);
+  const [treasuryAmount, setTreasuryAmount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [curAPY, setCurAPY] = useState('0')
   const [curEpoch, setCurEpoch] = useState(0)
+  const [userBalance, setUserBalance] = useState(0);
+  const [userApprovedAmount, setUserApprovedAmount] = useState(0);
+  const [userDepositedAmount, setUserDepositedAmount] = useState(0);
+  const [referralReward, setReferralReward] = useState(0);
+  const [refTotalWithdraw, setRefTotalWithdraw] = useState(0);
+  const [nextWithdraw, setNextWithdraw] = useState(0);
+  const [userInfo, setUserInfo] = useState({});
+  const [enabledAmount, setEnabledAmount] = useState(0);
 
-  const queryString = window.location.search;
-  const parameters = new URLSearchParams(queryString);
-  const newReferral = parameters.get('ref');
 
   useEffect(() => {
     const referral = window.localStorage.getItem("REFERRAL")
@@ -198,10 +189,10 @@ const Interface = () => {
         setTotalAmount(web3NoAccount.utils.fromWei(totalAmount, DECIMALS));
 
         const treasuryAmount = await tokenAbiNoAccount.methods.balanceOf(TREASURY).call();
-        setTotalAmount(web3NoAccount.utils.fromWei(totalAmount, DECIMALS));
+        setTreasuryAmount(web3NoAccount.utils.fromWei(treasuryAmount, DECIMALS));
 
         const epochNumberVal = await AbiNoAccount.methods.epochNumber().call();
-        const curAPYVal = await AbiNoAccount.methods.apy(parseInt(epochNumberVal) + 1).call();
+        const curAPYVal = await AbiNoAccount.methods.apy(epochNumberVal).call();
         setCurAPY(curAPYVal)
 
         if (curAcount) {
@@ -215,28 +206,9 @@ const Interface = () => {
           const userBalance = await tokenAbi.methods.balanceOf(curAcount).call();
           setUserBalance(web3NoAccount.utils.fromWei(userBalance, DECIMALS));
 
-          const approvedAmount = await tokenAbi.methods.allowance(curAcount, contractAddress).call();
+          const approvedAmount = await tokenAbi.methods.allowance(curAcount, TTNBANK).call();
           setUserApprovedAmount(web3NoAccount.utils.fromWei(approvedAmount, DECIMALS));
 
-          const lastActionEpochNumber = await Abi.methods.lastActionEpochNumber(curAcount).call();
-          console.log("lastActionEpochNumber: ", lastActionEpochNumber)
-          const userDepositedAmount = await Abi.methods.amount(curAcount, parseInt(lastActionEpochNumber) + 1).call();
-          setUserDepositedAmount(web3NoAccount.utils.fromWei(userDepositedAmount, DECIMALS));
-
-          // const dailyRoi = await Abi.methods.DailyRoi(userDepositedAmount.invested).call();
-          // setUserDailyRoi(dailyRoi / 10e17);
-
-          // const dailyReward = await Abi.methods.userReward(curAcount).call();
-          // setDailyReward(dailyReward / 10e17);
-
-          // const approvedWithdraw = await Abi.methods.approvedWithdrawal(curAcount).call();
-          // setApprovedWithdraw(approvedWithdraw.amount / 10e17);
-
-          const totalWithdraw = await Abi.methods.totalRewards(curAcount).call();
-          setTotalWithdraw(web3NoAccount.utils.fromWei(totalWithdraw, DECIMALS))
-
-          const lastWithdraw = await Abi.methods.lastRewards(curAcount).call();
-          setLastWithdraw(web3NoAccount.utils.fromWei(lastWithdraw, DECIMALS))
 
           const nextWithdraw = await Abi.methods.getPendingReward(curAcount).call();
           setNextWithdraw(web3NoAccount.utils.fromWei(nextWithdraw, DECIMALS))
@@ -246,6 +218,16 @@ const Interface = () => {
 
           const refTotalWithdraw = await Abi.methods.referralTotalRewards(curAcount).call();
           setRefTotalWithdraw(web3NoAccount.utils.fromWei(refTotalWithdraw, DECIMALS));
+
+          const userInfo = await Abi.methods.userInfo(curAcount).call();
+          console.log("[PRINCE](userInfo): ", userInfo)
+          setUserInfo(userInfo)
+
+          const userDepositedAmount = await Abi.methods.amount(curAcount, parseInt(userInfo[3])).call();
+          setUserDepositedAmount(web3NoAccount.utils.fromWei(userDepositedAmount, DECIMALS));
+
+          const enabledAmount = parseInt(userInfo[1]) > 0 ? (await Abi.methods.amount(curAcount, parseInt(userInfo[1]) - 1)) : "0"
+          setEnabledAmount(web3NoAccount.utils.fromWei(enabledAmount, DECIMALS))
         }
 
         // const owner = await Abi.methods.owner().call();
@@ -259,6 +241,15 @@ const Interface = () => {
     fetchData();
   }, [isConnected, web3, Abi, tokenAbi, refetch, curAcount]);
 
+  function withdrawOpen(epoch) {
+    const openTime = (START_TIME + epoch * EPOCH_LENGTH) * 1000;
+    return `${new Date(openTime).toDateString()} ${new Date(openTime).toLocaleTimeString()}`
+  }
+
+  function withdrawClose(epoch) {
+    const closeTime = (START_TIME + epoch * EPOCH_LENGTH + WITHDRAW_TIME) * 1000;
+    return `${new Date(closeTime).toDateString()} ${new Date(closeTime).toLocaleTimeString()}`
+  }
   // useEffect(() => {
   //   const TimeLine = async () => {
   //     if (isConnected && Abi) {
@@ -302,7 +293,7 @@ const Interface = () => {
       if (isConnected && Abi) {
         //  console.log("success")
         setPendingMessage("Claiming...")
-        Abi.methods.withdrawReward().send({
+        Abi.methods.withdraw("0").send({
           from: curAcount,
         }).then((txHash) => {
           console.log(txHash)
@@ -399,13 +390,8 @@ const Interface = () => {
         return
       }
 
-      if (parseFloat(depositValue) < MIN_DEPOSIT_AMOUNT) {
-        setPendingMessage("Deposit amount must be equal or greater than minimum deposit amount!")
-        return
-      }
-
-      if (parseFloat(depositValue) > MAX_DEPOSIT_AMOUNT) {
-        setPendingMessage("Deposit amount must be equal or less than maximum deposit amount!")
+      if (parseFloat(depositValue) < 0) {
+        setPendingMessage("Deposit amount must be equal or greater than 0 BUSD!")
         return
       }
 
@@ -442,7 +428,6 @@ const Interface = () => {
   };
 
   const unStake = async (e) => {
-
     try {
       e.preventDefault();
       if (pendingTx) {
@@ -463,7 +448,7 @@ const Interface = () => {
       setPendingTx(true)
       if (isConnected && Abi) {
         setPendingMessage("Unstaking...");
-        const _withdrawValue = web3NoAccount.utils.fromWei(withdrawValue, DECIMALS);
+        const _withdrawValue = web3NoAccount.utils.toWei(withdrawValue, DECIMALS);
         console.log("[PRINCE](withdraw): ", _withdrawValue)
         await Abi.methods.withdraw(_withdrawValue).send({
           from: curAcount,
@@ -486,8 +471,7 @@ const Interface = () => {
     }
   };
 
-  const withDrawRequest = async (e) => {
-
+  const withdrawRequest = async (e) => {
     try {
       e.preventDefault();
       if (pendingTx) {
@@ -495,31 +479,26 @@ const Interface = () => {
         return
       }
 
-      if (Number.isNaN(parseFloat(withdrawValue))) {
-        setPendingMessage("Input Withdraw Amount!")
-        return
-      }
-
-      if (parseFloat(withdrawValue) > userDepositedAmount) {
-        setPendingMessage("Withdraw amount must be less than your deposited amount!")
+      if (Number.isNaN(parseFloat(withdrawRequestValue))) {
+        setPendingMessage("Input Request Amount!")
         return
       }
 
       setPendingTx(true)
       if (isConnected && Abi) {
-        setPendingMessage("Unstaking...");
-        const _withdrawValue = web3NoAccount.utils.fromWei(withdrawValue, DECIMALS);
-        console.log("[PRINCE](withdraw): ", _withdrawValue)
-        await Abi.methods.withdraw(_withdrawValue).send({
+        setPendingMessage("Requesting...");
+        const _withdrawRequestValue = web3NoAccount.utils.toWei(withdrawRequestValue, DECIMALS);
+        console.log("[PRINCE](withdrawRequest): ", _withdrawRequestValue)
+        await Abi.methods.withdrawRequest(_withdrawRequestValue).send({
           from: curAcount,
         }).then((txHash) => {
           console.log(txHash)
           const txHashString = `${txHash.transactionHash}`
           const msgString = txHashString.substring(0, 8) + "..." + txHashString.substring(txHashString.length - 6)
-          setPendingMessage(`UnStaked Successfully! txHash is ${msgString}`);
+          setPendingMessage(`Requested Successfully! txHash is ${msgString}`);
         }).catch((err) => {
           console.log(err)
-          setPendingMessage(`UnStaked Failed because ${err.message}`);
+          setPendingMessage(`Requested Failed because ${err.message}`);
         });
       }
       else {
@@ -544,7 +523,7 @@ const Interface = () => {
       if (isConnected && tokenAbi) {
         setPendingMessage("Approving...");
 
-        await tokenAbi.methods.approve(contractAddress, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").send({
+        await tokenAbi.methods.approve(TTNBANK, "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff").send({
           from: curAcount
         }).then((txHash) => {
           console.log(txHash)
@@ -595,8 +574,8 @@ const Interface = () => {
                     <a href="/docs/Whitepaper V1.pdf" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> DOCS </a>&nbsp;&nbsp;&nbsp;
                     <a href="https://twitter.com/MangoFinanceCEO" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> TWITTER </a>&nbsp;&nbsp;&nbsp;
                     <a href=" https://t.me/mangofinanceinc" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> TELEGRAM </a>&nbsp;&nbsp;&nbsp;
-                    <a href={"https://testnet.bscscan.com/address/" + contractAddress + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp;
-                    {/* <a href={"https://www.bscscan.com/address/" + contractAddress + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp; */}
+                    <a href={"https://testnet.bscscan.com/address/" + TTNBANK + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp;
+                    {/* <a href={"https://www.bscscan.com/address/" + TTNBANK + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp; */}
                     <a href="https://georgestamp.xyz/" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> AUDIT </a>
                   </h2>
                   <p style={{ color: "#ffffff", fontSize: "14px", fontWeight: "200", marginBottom: "0px" }}>COPYRIGHT © 2022 TTNBANK Project All rights reserved!</p>
@@ -622,7 +601,7 @@ const Interface = () => {
               <div className="card-body">
                 <center>
                   <h4 className="subtitle">TREASURY</h4>
-                  <h4 className="value-text">{Number(totalAmount).toFixed(2)} BUSD</h4>
+                  <h4 className="value-text">{Number(treasuryAmount).toFixed(2)} BUSD</h4>
                 </center>
               </div>
             </div>
@@ -647,21 +626,11 @@ const Interface = () => {
               </div>
             </div>
           </div>
-          {/* <div className="col-sm-3">
-            <div className="card">
-              <div className="card-body">
-                <center>
-                  <h3 className="subtitle">DEPOSIT FEE</h3>
-                  <h3 className="value-text">{DEPOSIT_FEE / DENOMINATOR_PERCENT}%</h3>
-                </center>
-              </div>
-            </div>
-          </div> */}
           <div className="col-sm-3">
             <div className="card">
               <div className="card-body">
                 <center>
-                  <h4 className="subtitle">Claim Yield Fee</h4>
+                  <h4 className="subtitle">CLAIM YIELD FEE</h4>
                   <h4 className="value-text">{WITHDRAW_FEE / DENOMINATOR_PERCENT}%</h4>
                 </center>
               </div>
@@ -677,7 +646,7 @@ const Interface = () => {
               <div className="card-body">
                 <h4 className="subtitle-normal" style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                   <b>BANK</b>
-                  <b style={{ color: "#ffffff" }}>{Number(totalAmount).toFixed(2)} BUSD</b>
+                  <b style={{ color: "rgb(254 222 91)" }}>{Number(totalAmount).toFixed(2)} BUSD</b>
                 </h4>
                 <hr />
                 <table className="table">
@@ -726,7 +695,7 @@ const Interface = () => {
                       <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(referralReward).toFixed(2)} BUSD</h5></td>
                     </tr>
                     <tr>
-                      <td><h5 className="content-text">TOTAL WITHDRAWN</h5></td>
+                      <td><h5 className="content-text">TOTAL</h5></td>
                       <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(refTotalWithdraw).toFixed(2)} BUSD</h5></td>
                     </tr>
                   </tbody>
@@ -748,12 +717,12 @@ const Interface = () => {
                     </tr> */}
                     <tr>
                       <td><h5 className="content-text">TOTAL</h5></td>
-                      <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(totalWithdraw).toFixed(3)} BUSD</h5></td>
+                      <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[5] : "0", DECIMALS)).toFixed(3)} BUSD</h5></td>
                     </tr>
                     <tr>
                       <td>
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>LAST CLAIM</b><br /><span className="value-text">{Number(lastWithdraw).toFixed(3)} BUSD</span>
+                          <b>LAST CLAIM</b><br /><span className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[4] : "0", DECIMALS)).toFixed(3)} BUSD</span>
                         </h6>
                       </td>
                       <td style={{ textAlign: "right", width: "160px" }} >
@@ -789,12 +758,12 @@ const Interface = () => {
                     disableFocusListener
                     disableHoverListener
                     disableTouchListener
-                    title={`Copied!\n${refLink}`}
+                    title={`Copied! ${refLink}`}
                     followCursor
                   >
                     <input type="text"
                       className="form-control input-box" readOnly
-                      style={{ marginTop: "10px" }}
+                      style={{ marginTop: "10px", fontSize: "15px" }}
                       value={refLink}
                       onClick={() => {
                         if (navigator.clipboard) {
@@ -820,24 +789,24 @@ const Interface = () => {
                     <tr>
                       <td>
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>OPEN</b><br /><span className="value-text">{Number(userDepositedAmount).toFixed(2)} BUSD</span>
+                          <b>OPEN</b><br /><span className="value-text">{withdrawOpen(parseInt(curEpoch) > 0 ? parseInt(curEpoch) : 1)}</span>
                         </h6>
                       </td>
                       <td style={{ textAlign: "right", width: "160px" }} >
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>CLOSE</b><br /><span className="value-text">{Number(userDepositedAmount).toFixed(2)} BUSD</span>
+                          <b>CLOSE</b><br /><span className="value-text">{withdrawClose(parseInt(curEpoch) > 0 ? parseInt(curEpoch) : 1)}</span>
                         </h6>
                       </td>
                     </tr>
                     <tr>
                       <td>
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>ENABLE</b><br /><span className="value-text">{Number(userDepositedAmount).toFixed(2)} BUSD</span>
+                          <b>ENABLE</b><br /><span className="value-text">{Number(enabledAmount).toFixed(2)} BUSD</span>
                         </h6>
                       </td>
                       <td style={{ textAlign: "right", width: "160px" }} >
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>REQUEST</b><br /><span className="value-text">{Number(userDepositedAmount).toFixed(2)} BUSD</span>
+                          <b>REQUESTED</b><br /><span className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[0] : "0", DECIMALS)).toFixed(2)} BUSD</span>
                         </h6>
                       </td>
                     </tr>
@@ -854,7 +823,7 @@ const Interface = () => {
                       </td>
                       <td style={{ textAlign: "right" }}>
                         <button className="btn btn-primary btn-lg btn-custom" style={{ width: "123px" }}
-                          onClick={withDrawRequest}
+                          onClick={withdrawRequest}
                           disabled={pendingTx}
                         >
                           REQUEST

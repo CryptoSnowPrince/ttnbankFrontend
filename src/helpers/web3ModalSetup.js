@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3Modal from "web3modal";
-
+import { RPC_URL, MAINNET } from "../Abi";
 dotenv.config();
 
 /**
@@ -16,7 +16,7 @@ const web3ModalSetup = () =>
         options: {
           infuraId: process.env.REACT_APP_INFURA_ID, // required
           rpc: {
-            97: "https://data-seed-prebsc-1-s1.binance.org:8545/", // bsctestnet
+            [MAINNET]: RPC_URL
             //  56: "https://bsc-dataseed.binance.org",
             //4002: "https://rpc.testnet.fantom.network/",
           },
