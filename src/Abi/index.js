@@ -14,9 +14,11 @@ export const WITHDRAW_TIME = 600
 
 export const TTNBANK = '0xf5341377d0e6368C16097E31c27bd2283A9Cdc8E'; // without withdraw
 
+// export const RPC_URL = "https://bsc-dataseed1.binance.org"
 export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
-export const MAINNET = 97
 export const PUBLIC_URL = "https://mango-finance-2022.web.app"
+export const MAINNET = 97
+
 export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
 export const DECIMALS = 'ether' // 18
 
