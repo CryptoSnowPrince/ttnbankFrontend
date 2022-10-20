@@ -46,6 +46,23 @@ const isAddress = web3NoAccount.utils.isAddress
 const tokenAbiNoAccount = getTokenAbi(web3NoAccount)
 const AbiNoAccount = getAbi(web3NoAccount)
 
+const displayRemainTime = (seconds) => {
+  if (seconds > 0) {
+    // Calculating the days, hours, minutes and seconds left
+    const timeDays = Math.floor(seconds / (60 * 60 * 24))
+    const timeHours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60))
+    const timeMinutes = Math.floor((seconds % (60 * 60)) / 60)
+
+    if (timeDays > 0) {
+      return `${timeDays}D : ${timeHours}H`
+    } else {
+      return `${timeHours}H : ${timeMinutes}M`
+    }
+  }
+
+  return `0H : 0M`
+}
+
 const Interface = () => {
   const isMobile = window.matchMedia("only screen and (max-width: 1000px)").matches;
 
@@ -75,7 +92,6 @@ const Interface = () => {
   const [treasuryAmount, setTreasuryAmount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [curAPY, setCurAPY] = useState('0')
-  const [curEpoch, setCurEpoch] = useState(0)
   const [userBalance, setUserBalance] = useState(0);
   const [userApprovedAmount, setUserApprovedAmount] = useState(0);
   const [userDepositedAmount, setUserDepositedAmount] = useState(0);
@@ -84,7 +100,10 @@ const Interface = () => {
   const [nextWithdraw, setNextWithdraw] = useState(0);
   const [userInfo, setUserInfo] = useState({});
   const [enabledAmount, setEnabledAmount] = useState(0);
+  const [curEpoch, setCurEpoch] = useState(0)
 
+  const [remainTime, setRemainTime] = useState(0)
+  const [withdrawState, setWithdrawState] = useState(false)
 
   useEffect(() => {
     const referral = window.localStorage.getItem("REFERRAL")
@@ -181,9 +200,20 @@ const Interface = () => {
     const fetchData = async () => {
       try {
         const blockTimestamp = (await web3NoAccount.eth.getBlock('latest')).timestamp;
-        console.log("[PRINCE](blockTimestamp): ", blockTimestamp)
         const curEpochVal = START_TIME > blockTimestamp ? 0 : Math.floor((blockTimestamp - START_TIME) / EPOCH_LENGTH + 1)
         setCurEpoch(curEpochVal)
+
+        const epoch = curEpochVal > 0 ? curEpoch : 1
+        const closeTime = (START_TIME + (epoch - 1) * EPOCH_LENGTH + WITHDRAW_TIME)
+
+        if (blockTimestamp < closeTime) {
+          setRemainTime(closeTime - blockTimestamp)
+          setWithdrawState(true)
+        } else {
+          setWithdrawState(false)
+          const openTime = (START_TIME + epoch * EPOCH_LENGTH)
+          setRemainTime(openTime - blockTimestamp)
+        }
 
         const totalAmount = await AbiNoAccount.methods.totalAmount().call();
         setTotalAmount(web3NoAccount.utils.fromWei(totalAmount, DECIMALS));
@@ -226,7 +256,7 @@ const Interface = () => {
           const userDepositedAmount = await Abi.methods.amount(curAcount, parseInt(userInfo[3])).call();
           setUserDepositedAmount(web3NoAccount.utils.fromWei(userDepositedAmount, DECIMALS));
 
-          const enabledAmount = parseInt(userInfo[1]) > 0 ? (await Abi.methods.amount(curAcount, parseInt(userInfo[1]) - 1)) : "0"
+          const enabledAmount = parseInt(userInfo[1]) > 0 ? (await Abi.methods.amount(curAcount, parseInt(userInfo[1]) - 1).call()) : "0"
           setEnabledAmount(web3NoAccount.utils.fromWei(enabledAmount, DECIMALS))
         }
 
@@ -241,15 +271,6 @@ const Interface = () => {
     fetchData();
   }, [isConnected, web3, Abi, tokenAbi, refetch, curAcount]);
 
-  function withdrawOpen(epoch) {
-    const openTime = (START_TIME + epoch * EPOCH_LENGTH) * 1000;
-    return `${new Date(openTime).toDateString()} ${new Date(openTime).toLocaleTimeString()}`
-  }
-
-  function withdrawClose(epoch) {
-    const closeTime = (START_TIME + epoch * EPOCH_LENGTH + WITHDRAW_TIME) * 1000;
-    return `${new Date(closeTime).toDateString()} ${new Date(closeTime).toLocaleTimeString()}`
-  }
   // useEffect(() => {
   //   const TimeLine = async () => {
   //     if (isConnected && Abi) {
@@ -313,21 +334,6 @@ const Interface = () => {
       setPendingTx(false)
     }
   };
-
-  // const withDraw = async (e) => {
-  //   e.preventDefault();
-  //   if (isConnected && Abi) {
-  //     //  console.log("success")`1234567 
-  //     setPendingMessage("Withdrawing funds")
-  //     await Abi.methods.withdrawal().send({
-  //       from: curAcount,
-  //     });
-  //     setPendingMessage("Successfully Withdraw");
-
-  //   } else {
-  //     // console.log("connect wallet");
-  //   }
-  // };
 
   const refWithdraw = async (e) => {
     try {
@@ -738,7 +744,7 @@ const Interface = () => {
                   </tbody>
                 </table>
                 <center>
-                  <button className="btn btn-primary btn-lg btn-custom" onClick={ClaimNow} disabled={pendingTx}>CLAIM</button>
+                  <button className="btn btn-primary btn-lg btn-custom" onClick={ClaimNow} disabled={pendingTx || nextWithdraw <= 0}>CLAIM</button>
                 </center>
               </div>
             </div>
@@ -782,20 +788,18 @@ const Interface = () => {
           <div className="col-sm-4">
             <div className="card">
               <div className="card-body">
-                <h4 className="subtitle-normal"><b>WITHDRAW</b></h4>
+                <h4 className="subtitle-normal">
+                  <b>WITHDRAW</b>
+                </h4>
                 <hr />
                 <table className="table">
                   <tbody>
                     <tr>
-                      <td>
-                        <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>OPEN</b><br /><span className="value-text">{withdrawOpen(parseInt(curEpoch) > 0 ? parseInt(curEpoch) : 1)}</span>
-                        </h6>
-                      </td>
-                      <td style={{ textAlign: "right", width: "160px" }} >
-                        <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>CLOSE</b><br /><span className="value-text">{withdrawClose(parseInt(curEpoch) > 0 ? parseInt(curEpoch) : 1)}</span>
-                        </h6>
+                      <td><h5 className="content-text">{withdrawState ? "Opening..." : "Remain Time:"}</h5></td>
+                      <td style={{ textAlign: "right" }}>
+                        <h5 className="value-text">
+                          {displayRemainTime(remainTime)}
+                        </h5>
                       </td>
                     </tr>
                     <tr>
@@ -806,7 +810,10 @@ const Interface = () => {
                       </td>
                       <td style={{ textAlign: "right", width: "160px" }} >
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>REQUESTED</b><br /><span className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[0] : "0", DECIMALS)).toFixed(2)} BUSD</span>
+                          <b>REQUESTED</b><br />
+                          <span className="value-text">
+                            {Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[0] : "0", DECIMALS)).toFixed(2)} BUSD
+                          </span>
                         </h6>
                       </td>
                     </tr>
