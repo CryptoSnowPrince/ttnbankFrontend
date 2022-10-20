@@ -143,9 +143,9 @@ tr {
   padding: 10px;
 }
 .subtitle {
-  font-weight: 700;
-  font-size: 25px;
-  line-height: 38px;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 25px;
   text-align: center;
   color: #FFBB00;
 }
@@ -161,7 +161,7 @@ tr {
   font-style: normal;
   font-weight: 800;
   font-size: 18px;
-  line-height: 38px;
+  line-height: 30px;
 
   background: linear-gradient(264.21deg, #FFFFFF 23.71%, #FFFFFF 88.15%);
   -webkit-background-clip: text;
@@ -169,9 +169,8 @@ tr {
   background-clip: text;
 }
 
-.value-text-12 {
-  font-weight: 600;
-  font-size: 13px;
+.value-text-14 {
+  font-size: 18px;
 
   color: #FFFFFF;
 }
@@ -180,7 +179,7 @@ tr {
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
-  line-height: 38px;
+  line-height: 30px;
   color: #FFBB00;
 }
 

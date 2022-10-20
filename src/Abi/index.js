@@ -1,26 +1,26 @@
 export const MIN_DEPOSIT_AMOUNT = 20
 export const MAX_DEPOSIT_AMOUNT = 25000
 export const REFERRAL_PERCENT = 1000
-export const DEPOSIT_FEE = 100
-// export const WITHDRAW_FEE = 50
+// export const DEPOSIT_FEE = 100
+export const WITHDRAW_FEE = 100
 export const DENOMINATOR = 10000
 export const DENOMINATOR_PERCENT = 100
-export const STAKE_DECIMALS = 'ether' // 18
+export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
+export const MAINNET = 56
+export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
+export const TREASURY = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
+export const PUBLIC_URL = "https://mango-finance-2022.web.app"
+export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
+export const DECIMALS = 'ether' // 18
+
 // export const contractAddress = '0xadABF482b1cC32a3dcce1b498cDa9b28584c804e'; // with withdraw
 // export const START_TIME = 1666056915
-// export const REWARD_DECIMALS = 'Mwei' // 6
 // export const EPOCH_LENGTH = 3600
 
 export const contractAddress = '0x088b78821263e43fE26a6CC069Fba6074dE29681'; // without withdraw
 export const START_TIME = 1666056225 // without withdraw
-export const REWARD_DECIMALS = 'Gwei' // 9
 export const EPOCH_LENGTH = 1200
 
-export const RPC_URL = "https://data-seed-prebsc-2-s2.binance.org:8545"
-export const MAINNET = 56
-export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
-export const PUBLIC_URL = "https://mango-finance-2022.web.app"
-export const REF_PREFIX = `${PUBLIC_URL}/?ref=`
 
 const abi = [
 	{

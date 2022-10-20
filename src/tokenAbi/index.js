@@ -1,4 +1,4 @@
-const address = "0x457752e5a1A576996FC1b9A050387919ea289Af9";
+const BUSD_ADDRESS = "0x457752e5a1A576996FC1b9A050387919ea289Af9";
 
 const abi = [
   {
@@ -78,5 +78,5 @@ const abi = [
 
 // @ts-ignore
 export default function getTokenAbi(web3) {
-  return new web3.eth.Contract(abi, address);
+  return new web3.eth.Contract(abi, BUSD_ADDRESS);
 }
