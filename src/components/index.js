@@ -571,7 +571,7 @@ const Interface = () => {
         </div>
       </nav>
       <div className="container">
-        <div className="row" style={{ marginBottom: "20px" }}>
+        {/* <div className="row" style={{ marginBottom: "20px" }}>
           <div className="col-sm-12">
             <div className="card">
               <div className="card-body">
@@ -580,8 +580,7 @@ const Interface = () => {
                     <a href="/docs/Whitepaper V1.pdf" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> DOCS </a>&nbsp;&nbsp;&nbsp;
                     <a href="https://twitter.com/MangoFinanceCEO" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> TWITTER </a>&nbsp;&nbsp;&nbsp;
                     <a href=" https://t.me/mangofinanceinc" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> TELEGRAM </a>&nbsp;&nbsp;&nbsp;
-                    <a href={"https://testnet.bscscan.com/address/" + TTNBANK + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp;
-                    {/* <a href={"https://www.bscscan.com/address/" + TTNBANK + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp; */}
+                    <a href={"https://www.bscscan.com/address/" + TTNBANK + "#code"} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> CONTRACT </a>&nbsp;&nbsp;&nbsp;
                     <a href="https://georgestamp.xyz/" target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "none" }}> AUDIT </a>
                   </h2>
                   <p style={{ color: "#ffffff", fontSize: "14px", fontWeight: "200", marginBottom: "0px" }}>COPYRIGHT © 2022 TTNBANK Project All rights reserved!</p>
@@ -589,7 +588,7 @@ const Interface = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         {
           pendingMessage !== '' ?
             <>
