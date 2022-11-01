@@ -909,8 +909,9 @@ const Interface = () => {
                     />
                     <br />
                     <p className="content-text18">Amount of returns calculated on the basis of deposit amount.
-                      <br />
-                      <b>Note:</b> Min deposit is 20 BUSD & max deposit is 25,000 BUSD.</p>
+                      {/* <br />
+                      <b>Note:</b> Min deposit is 20 BUSD & max deposit is 25,000 BUSD. */}
+                    </p>
                   </div>
                   <div className="col-sm-6" style={{ textAlign: "right" }}>
                     <h3 className="subtitle-normal" style={{ fontSize: "16px" }}>ROI</h3>
