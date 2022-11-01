@@ -767,7 +767,7 @@ const Interface = () => {
               </div>
             </div>
             <br />
-            <div className="card">
+            <div className="card" style={{ marginTop: "58px" }}>
               <div className="card-body">
                 <h4 className="subtitle-normal"><b>REFERRAL LINK</b></h4>
                 <hr />
