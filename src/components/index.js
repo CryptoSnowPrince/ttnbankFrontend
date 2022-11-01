@@ -724,19 +724,36 @@ const Interface = () => {
                     </tr> */}
                     <tr>
                       <td><h5 className="content-text">TOTAL</h5></td>
-                      <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[5] : "0", DECIMALS)).toFixed(3)} BUSD</h5></td>
+                      <td style={{ textAlign: "right" }}>
+                        <h5 className="value-text">
+                          {Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[5] : "0", DECIMALS)).toFixed(3)} BUSD
+                        </h5>
+                      </td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td>
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>LAST CLAIM</b><br /><span className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[4] : "0", DECIMALS)).toFixed(3)} BUSD</span>
+                          <b>LAST CLAIM</b><br />
+                          <span className="value-text">
+                            {Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[4] : "0", DECIMALS)).toFixed(3)} BUSD
+                          </span>
                         </h6>
                       </td>
-                      <td style={{ textAlign: "right", width: "160px" }} >
+                      <td style={{ textAlign: "right", width: "180px" }} >
                         <h6 className="content-text" style={{ lineHeight: "20px" }}>
-                          <b>NEXT CLAIM</b><br /><span className="value-text">{Number(nextWithdraw).toFixed(3)} BUSD</span>
+                          <b>ESTIMATED NEXT CLAIM</b><br /><span className="value-text">{Number(nextWithdraw).toFixed(3)} BUSD</span>
                         </h6>
                       </td>
+                    </tr> */}
+                    <tr>
+                      <td><h5 className="content-text">LAST CLAIM</h5></td>
+                      <td style={{ textAlign: "right" }}>
+                        <h5 className="value-text">{Number(web3NoAccount.utils.fromWei(userInfo && Object.keys(userInfo).length > 0 ? userInfo[4] : "0", DECIMALS)).toFixed(3)} BUSD</h5>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><h5 className="content-text">ESTIMATED NEXT CLAIM</h5></td>
+                      <td style={{ textAlign: "right" }}><h5 className="value-text">{Number(nextWithdraw).toFixed(3)} BUSD</h5></td>
                     </tr>
                     {/* <tr>
                       <td><h6 className="content-text14" style={{ lineHeight: "20px" }}><b>Weekly Yield</b> <br /> <span className="value-text">{Number(dailyReward).toFixed(3)}/{userDailyRoi} BUSD</span></h6></td>
@@ -898,10 +915,10 @@ const Interface = () => {
                   <div className="col-sm-6" style={{ textAlign: "right" }}>
                     <h3 className="subtitle-normal" style={{ fontSize: "16px" }}>ROI</h3>
                     <p className="content-text">
-                      DAILY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR / 7).toFixed(3)} BUSD</span> <br />
-                      WEEKLY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR).toFixed(3)} BUSD</span>  <br />
-                      MONTHLY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR * 4.345).toFixed(3)} BUSD</span>  <br />
-                      Anual RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR * 52.1428).toFixed(3)} BUSD</span> </p>
+                      DAILY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR / 30).toFixed(3)} BUSD</span> <br />
+                      WEEKLY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR / 4.286).toFixed(3)} BUSD</span>  <br />
+                      MONTHLY RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR).toFixed(3)} BUSD</span>  <br />
+                      Anual RETURN: <span className="value-text">{Number(calculate * curAPY / DENOMINATOR * 12).toFixed(3)} BUSD</span> </p>
                   </div>
                 </div>
               </div>
