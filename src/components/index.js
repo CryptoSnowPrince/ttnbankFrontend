@@ -23,11 +23,8 @@ import {
 } from "../Abi";
 // import logo from "./../assets/logo.png";
 // import logoMobile from "./../assets/logo.png";
-// import axios from "axios";
-// import adBanner from "./../assets/banner.gif";
 
 const web3Modal = web3ModalSetup();
-// console.log("web3Modal: ", web3Modal);
 
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -270,30 +267,6 @@ const Interface = () => {
 
     fetchData();
   }, [isConnected, web3, Abi, tokenAbi, refetch, curAcount]);
-
-  // useEffect(() => {
-  //   const TimeLine = async () => {
-  //     if (isConnected && Abi) {
-  //       //   let claimTime = await Abi.methods.claimTime(curAcount).call();
-  //       //   if (claimTime.startTime > 0) {
-  //       //     let _claimStart = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(claimTime.startTime + "000");
-  //       //     let _claimEnd = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(claimTime.deadline + "000");
-  //       //     setClaimStartTime(_claimStart);
-
-  //       //     setClaimDeadline(_claimEnd);
-
-  //       //     let weekly = await Abi.methods.weekly(curAcount).call();
-  //       //     let _start = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(weekly.startTime + "000");
-  //       //     let _end = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(weekly.deadline + "000");
-
-  //       //     setLastWithdraw(_start);
-  //       //     setNextWithdraw(_end);
-  //       //   }
-  //     }
-  //   }
-  //   TimeLine();
-  //   // eslint-disable-next-line
-  // }, [refetch]);
 
   // buttons
 
@@ -561,10 +534,10 @@ const Interface = () => {
           <div style={{ width: "200px" }}></div>
           {/* <div style={{ width: "200px", height: "140px" }}></div> */}
           <button className="btn btn-primary btn-lg btnd btn-custom"
-            style={{ background: "#000", color: "#fff", width: "155px" }}
+            style={{ color: "#fff", width: "155px", fontWeight: "bold" }}
             disabled={pendingTx}
             onClick={isConnected ? logoutOfWeb3Modal : loadWeb3Modal}>
-            <i className="fas fa-wallet" style={{ marginRight: "12px" }}>
+            <i className="fas fa-wallet" style={{ marginRight: "12px", color: "white" }}>
             </i>
             {connButtonText}
           </button>

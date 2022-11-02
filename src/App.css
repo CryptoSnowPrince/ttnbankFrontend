@@ -1,6 +1,5 @@
 body {
-  /* background-color: #0C1412!important; */
-  background-color: #0c1412 !important;
+  background-color: #09092b !important;
   color: rgba(255, 255, 255, 0.08);
   font-weight: bold;
   font-family: 'Open Sans', sans-serif;
@@ -8,9 +7,9 @@ body {
 }
 
 .card {
-  color: black;
+  color: rgb(215, 195, 195);
   /* background: rgba(255, 255, 255, 0.08); */
-  background: #1f2625;
+  background: #080844;
   border-radius: 15px;
 }
 .cardDino {
@@ -55,16 +54,19 @@ tr {
 }
 
 .form-control::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 1000;
   /* text-align: right; */
 }
 
 .form-control:focus {
     box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
-}
+    font-weight: 1000;
+  }
 
 .form-control:disabled, .form-control[readonly] {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255);
+  font-weight: 1000;
   opacity: 1;
 }
 
@@ -121,19 +123,19 @@ tr {
 }
 
 .input-box {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255);
   border-radius: 15px;
   padding: 0.5rem 1.2rem;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0);
 }
 
 .input-box:focus {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255);
   border-radius: 15px;
   /* padding: 0.5rem 1rem; */
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0);
 }
 
 .btn-sound {
