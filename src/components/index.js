@@ -78,7 +78,7 @@ const Interface = () => {
   const [refLink, setRefLink] = useState(`${REF_PREFIX}0x0000000000000000000000000000000000000000`);
 
   const [pendingMessage, setPendingMessage] = useState('');
-  const [calculate, setCalculator] = useState('');
+  const [calculate, setCalculator] = useState('1000');
   const [pendingTx, setPendingTx] = useState(false);
   const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false);
 
