@@ -899,7 +899,7 @@ const Interface = () => {
           </div>
         </div>
         <br />
-        <div style={{ width: "100%", height: "100vh" }}></div>
+        <br />
       </div>
     </>);
 }
