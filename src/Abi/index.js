@@ -3,7 +3,7 @@ export const WITHDRAW_FEE = 100
 export const DENOMINATOR = 10000
 export const DENOMINATOR_PERCENT = 100
 
-export const PUBLIC_URL = "https://mango-finance-2022.web.app"
+export const PUBLIC_URL = "https://ttnbank.web.app"
 
 // test
 // export const ADMIN_ACCOUNT = '0x2Cc4467e7a94D55497B704a0acd90ACd1BF9A5af'
